@@ -1,26 +1,32 @@
 name: iOS TestFlight Release
+
 on:
   workflow_dispatch:
 
 jobs:
   deployIos:
     runs-on: macos-latest
+
     env:
       API_KEY_INFO: ${{ secrets.API_KEY_INFO }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Set up ruby env
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3.5
           bundler-cache: true
-          working-directory: ios
-      - name: Setup App Store Store Connect
+
+      - name: Set up API key file
         run: |
-          mkdir -p ./ios/fastlane
-          echo "$API_KEY_INFO" > ./ios/fastlane/api_key_info.json
-      - name: Build and Deploy to TestFlight
+          mkdir -p iosApp/fastlane
+          echo "$API_KEY_INFO" > iosApp/fastlane/api_key_info.json
+
+      - name: Install dependencies and deploy to TestFlight
+        working-directory: iosApp
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
