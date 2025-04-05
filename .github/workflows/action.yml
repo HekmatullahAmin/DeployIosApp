@@ -15,6 +15,7 @@ jobs:
         with:
           ruby-version: 3.3.5
           bundler-cache: true
+          working-directory: ios
       - name: Setup App Store Store Connect
         run: echo "$API_KEY_INFO" >> ./ios/fastlane/api_key_info.json
       - name: Build and Deploy to TestFlight
