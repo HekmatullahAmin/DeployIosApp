@@ -8,31 +8,34 @@ jobs:
     runs-on: macos-latest
 
     env:
-      API_KEY_INFO: ${{ secrets.API_KEY_INFO }}
+      APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
+      APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up ruby env
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3.5
           bundler-cache: true
 
-      - name: Set up API key file
+      - name: Set up App Store Connect API key
         run: |
           mkdir -p iosApp/fastlane
-          echo "$API_KEY_INFO" > iosApp/fastlane/api_key_info.json
+          echo "$API_KEY_P8" > iosApp/fastlane/api_key.p8
+        env:
+          API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
 
       - name: Install dependencies and deploy to TestFlight
         working-directory: iosApp
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
         run: |
           bundle install
           bundle exec fastlane ios beta
+
 
 
 #on:
