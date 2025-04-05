@@ -1,4 +1,4 @@
-name: iOS TestFlight Release
+name: iOS binary build & upload
 
 on:
   workflow_dispatch:
