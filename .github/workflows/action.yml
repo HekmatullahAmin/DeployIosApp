@@ -17,10 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Ruby
+      - name: Set up Ruby with Bundler 2.6.5
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3.5
+          bundler: 2.6.5
           bundler-cache: true
 
       - name: Set up App Store Connect API key
