@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Ruby with Bundler 2.6.5
         uses: ruby/setup-ruby@v1
@@ -31,11 +31,19 @@ jobs:
         env:
           API_KEY_P8: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
 
-      - name: Install dependencies and deploy to TestFlight
+      - name: Install dependencies
         working-directory: iosApp
-        run: |
-          bundle install
-          bundle exec fastlane ios beta
+        run: bundle install
+
+      - name: Build and deploy to TestFlight
+        working-directory: iosApp
+        run: bundle exec fastlane ios beta
+
+#      - name: Install dependencies and deploy to TestFlight
+#        working-directory: iosApp
+#        run: |
+#          bundle install
+#          bundle exec fastlane ios beta
 
 
 
