@@ -9,10 +9,6 @@ jobs:
 
     env:
       API_KEY_INFO: ${{ secrets.API_KEY_INFO }}
-#      APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
-#      APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
-#      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-#      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
 
     steps:
       - name: Checkout repository
@@ -29,9 +25,6 @@ jobs:
         run: |
           mkdir -p iosApp/fastlane
           echo "$API_KEY_INFO" > iosApp/fastlane/api_key_info.json
-
-      - name: Install pod
-        run: cd iosApp && pod install
 
       - name: Install dependencies and deploy to TestFlight
         env:
