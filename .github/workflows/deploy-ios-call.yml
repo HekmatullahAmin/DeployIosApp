@@ -5,7 +5,7 @@ on:
 
 jobs:
   call-reusable-workflow:
-    uses: HekmatullahAmin/kmp-publish-ios-on-testflight-action/.git/workflows/ios-testflight-deploy.yml
+    uses: HekmatullahAmin/kmp-publish-ios-on-testflight-action/.git/workflows/ios-testflight-deploy.yml@master
     with:
       ruby-version: '3.3.5'
       working-directory: iosApp
