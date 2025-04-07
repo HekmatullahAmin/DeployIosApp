@@ -1,39 +1,35 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
-      setup_ci(
-        provider: "circleci"
-      )
-    match(type: "appstore",
-     app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
-     readonly: true,
-    api_key_path: "fastlane/api_key_info.json")
 
+    # Prepares the Fastlane environment for use in CI systems
+    setup_ci(
+      provider: "circleci"
+    )
+
+    # Downloads code signing certificates and provisioning profiles from your match repo
+    match(
+      type: "appstore", # Use appstore profiles for TestFlight
+      app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
+      readonly: true, # Ensures it doesn't attempt to modify or create new certs
+      api_key_path: "fastlane/api_key_info.json" # Authenticates using App Store Connect API key
+    )
+
+    # Retrieves the most recent build number uploaded to TestFlight
     latest = latest_testflight_build_number(
-#           version: "1.3",
-          app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
-          api_key_path: "fastlane/api_key_info.json"
-        )
+      app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
+      api_key_path: "fastlane/api_key_info.json"
+    )
 
-        increment_build_number(build_number: latest + 1)
+    # Increments the build number locally, setting it to latest + 1
+    increment_build_number(build_number: latest + 1)
+
+    # Builds the iOS app using the specified scheme (defined in Xcode project/workspace)
     build_app(scheme: "iosApp")
+
+    # Uploads the built app to TestFlight via the App Store Connect API
     pilot(api_key_path: "fastlane/api_key_info.json", skip_waiting_for_build_processing: true)
   end
 end

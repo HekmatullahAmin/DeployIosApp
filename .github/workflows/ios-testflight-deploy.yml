@@ -1,4 +1,9 @@
-name: iOS binary build & upload
+name: Build and Upload iOS App to TestFlight
+
+#on:
+#  push:
+#    tags:
+#      - '*-ios' # Trigger on tagging a commit with suffix "-ios" (e.g., 1.0.0-ios)
 
 on:
   workflow_dispatch:
@@ -26,23 +31,10 @@ jobs:
           mkdir -p iosApp/fastlane
           echo "$API_KEY_INFO" > iosApp/fastlane/api_key_info.json
 
-      - name: Install dependencies and deploy to TestFlight
+      - name: Run Fastlane beta lane
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
         run: |
             cd iosApp
             bundle exec fastlane ios beta
-
-#      - name: Install dependencies and deploy to TestFlight
-#        working-directory: iosApp
-#        run: |
-#          bundle install
-#          bundle exec fastlane ios beta
-
-
-
-#on:
-#  push:
-#    tags:
-#      - '*-ios' # Trigger on tagging a commit with suffix "-ios" (e.g., 1.0.0-ios)
