@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Deploy iOS Action
-        uses: HekmatullahAmin/kmp-publish-ios-on-testflight-action/.github/actions/action
+        uses: HekmatullahAmin/kmp-publish-ios-on-testflight-action@master
         with:
           ruby-version: '3.3.5'
           appstore-key-id: ${{ secrets.APPSTORE_KEY_ID }}
