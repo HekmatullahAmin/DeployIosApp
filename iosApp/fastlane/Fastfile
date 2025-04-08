@@ -1,16 +1,5 @@
 default_platform(:ios)
 
-# 👇 Only for local development to load `.env`
-# begin
-#   require 'dotenv'
-#   Dotenv.load(File.expand_path('../../.env', __dir__)) # ← adjusted path
-# #   Dotenv.load(File.expand_path('.env', __dir__))
-#   UI.message("🔑 APPSTORE_KEY_ID: #{ENV["APPSTORE_KEY_ID"]}")
-#   UI.message("🔑 APPSTORE_ISSUER_ID: #{ENV["APPSTORE_ISSUER_ID"]}")
-# rescue LoadError
-#   UI.important("Dotenv not installed — skipping .env loading")
-# end
-
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
