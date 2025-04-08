@@ -1,35 +1,96 @@
 default_platform(:ios)
 
+# 👇 Only for local development to load `.env`
+begin
+  require 'dotenv'
+  Dotenv.load(File.expand_path('../../.env', __dir__)) # ← adjusted path
+  UI.message("🔑 APPSTORE_KEY_ID: #{ENV["APPSTORE_KEY_ID"]}")
+  UI.message("🔑 APPSTORE_ISSUER_ID: #{ENV["APPSTORE_ISSUER_ID"]}")
+rescue LoadError
+  UI.important("Dotenv not installed — skipping .env loading")
+end
+
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
-
     # Prepares the Fastlane environment for use in CI systems
     setup_ci(
       provider: "circleci"
     )
 
-    # Downloads code signing certificates and provisioning profiles from your match repo
-    match(
-      type: "appstore", # Use appstore profiles for TestFlight
-      app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
-      readonly: true, # Ensures it doesn't attempt to modify or create new certs
-      api_key_path: "fastlane/api_key_info.json" # Authenticates using App Store Connect API key
+    UI.message("🔐 APPSTORE_KEY_ID: #{ENV["APPSTORE_KEY_ID"]}")
+    UI.message("🔐 APPSTORE_ISSUER_ID: #{ENV["APPSTORE_ISSUER_ID"]}")
+
+    # Build App Store Connect API key using ENV variables
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APPSTORE_KEY_ID"],
+      issuer_id: ENV["APPSTORE_ISSUER_ID"],
+#       key: ENV["APPSTORE_PRIVATE_KEY"].gsub('\\n', "\n")
+      key_filepath: "./fastlane/Api_key.p8"
     )
 
-    # Retrieves the most recent build number uploaded to TestFlight
+    UI.message("✅ API Key generated: #{api_key}")
+
+    # Downloads code signing credentials using the API key
+    match(
+      type: "appstore",
+      app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
+      readonly: true,
+      api_key: api_key
+    )
+
+    # Retrieves the most recent TestFlight build number
     latest = latest_testflight_build_number(
       app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
-      api_key_path: "fastlane/api_key_info.json"
+      api_key: api_key
     )
 
-    # Increments the build number locally, setting it to latest + 1
+    # Increment build number locally
     increment_build_number(build_number: latest + 1)
 
-    # Builds the iOS app using the specified scheme (defined in Xcode project/workspace)
+    # Build app
     build_app(scheme: "iosApp")
 
-    # Uploads the built app to TestFlight via the App Store Connect API
-    pilot(api_key_path: "fastlane/api_key_info.json", skip_waiting_for_build_processing: true)
+    # Upload to TestFlight
+    pilot(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true
+    )
   end
 end
+
+# default_platform(:ios)
+#
+# platform :ios do
+#   desc "Push a new beta build to TestFlight"
+#   lane :beta do
+#
+#     # Prepares the Fastlane environment for use in CI systems
+#     setup_ci(
+#       provider: "circleci"
+#     )
+#
+#     # Downloads code signing certificates and provisioning profiles from your match repo
+#     match(
+#       type: "appstore", # Use appstore profiles for TestFlight
+#       app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
+#       readonly: true, # Ensures it doesn't attempt to modify or create new certs
+#       api_key_path: "fastlane/api_key_info.json" # Authenticates using App Store Connect API key
+#     )
+#
+#     # Retrieves the most recent build number uploaded to TestFlight
+#     latest = latest_testflight_build_number(
+#       app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
+#       api_key_path: "fastlane/api_key_info.json"
+#     )
+#
+#     # Increments the build number locally, setting it to latest + 1
+#     increment_build_number(build_number: latest + 1)
+#
+#     # Builds the iOS app using the specified scheme (defined in Xcode project/workspace)
+#     build_app(scheme: "iosApp")
+#
+#     # Uploads the built app to TestFlight via the App Store Connect API
+#     pilot(api_key_path: "fastlane/api_key_info.json", skip_waiting_for_build_processing: true)
+#   end
+# end
