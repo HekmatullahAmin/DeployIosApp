@@ -30,10 +30,16 @@ platform :ios do
     )
 
     # Increment build number locally
-    increment_build_number(build_number: latest + 1)
+    increment_build_number(
+        build_number: latest + 1,
+        xcodeproj: "iosApp/iosApp.xcodeproj"
+    )
 
     # Build app
-    build_app(scheme: "iosApp")
+    build_app(
+        scheme: "iosApp",
+        project: "iosApp/iosApp.xcodeproj"
+    )
 
     # Upload to TestFlight
     pilot(
