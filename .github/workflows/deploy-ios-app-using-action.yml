@@ -18,4 +18,4 @@ jobs:
           appstore-issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           appstore-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
           match-password: ${{ secrets.MATCH_PASSWORD }}
-          match-git-basic-auth: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          match-git-basic-authorization: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
