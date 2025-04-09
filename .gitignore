@@ -19,3 +19,4 @@ captures
 
 fastlane/api_key_info.json
 fastlane/.env
+fastlane/Api_key.p8
