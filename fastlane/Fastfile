@@ -30,7 +30,8 @@ platform :ios do
       type: "appstore",
       app_identifier: "org.hekmatullahamin.deployiosapp.DeployIosApp",
       readonly: true,
-      api_key: api_key
+      api_key: api_key,
+      git_basic_authorization: match_git_basic_authorization
     )
 
     # Retrieves the most recent TestFlight build number
