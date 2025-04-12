@@ -2,7 +2,14 @@ default_platform(:ios)
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
-  lane :beta do
+  lane :beta do |options|
+    # Flexible parameter resolution: CLI option → ENV fallback
+    key_id = options[:appstore_key_id] || ENV["APPSTORE_KEY_ID"]
+    issuer_id = options[:appstore_issuer_id] || ENV["APPSTORE_ISSUER_ID"]
+    key_filepath = options[:key_filepath] || ENV["KEY_FILEPATH"] || "./fastlane/Api_key.p8"
+    match_password = options[:match_password] || ENV["MATCH_PASSWORD"]
+    match_git_basic_authorization = options[:match_git_basic_authorization] || ENV["MATCH_GIT_BASIC_AUTHORIZATION"]
+
     # Prepares the Fastlane environment for use in CI systems
     setup_ci(
       provider: "circleci"
@@ -10,9 +17,12 @@ platform :ios do
 
     # Build App Store Connect API key using ENV variables
     api_key = app_store_connect_api_key(
-      key_id: ENV["APPSTORE_KEY_ID"],
-      issuer_id: ENV["APPSTORE_ISSUER_ID"],
-      key_filepath: "./fastlane/Api_key.p8"
+#       key_id: ENV["APPSTORE_KEY_ID"],
+      key_id: key_id,
+#       issuer_id: ENV["APPSTORE_ISSUER_ID"],
+      issuer_id: issuer_id,
+#       key_filepath: "./fastlane/Api_key.p8"
+      key_filepath: key_filepath
     )
 
     # Downloads code signing credentials using the API key
@@ -36,9 +46,11 @@ platform :ios do
     )
 
     # Build app
-    build_app(
+    build_ios_app(
         scheme: "iosApp",
-        project: "iosApp/iosApp.xcodeproj"
+        project: "iosApp/iosApp.xcodeproj",
+        output_name: "DeployIosApp.ipa",
+        output_directory: "iosApp/build"
     )
 
     # Upload to TestFlight
