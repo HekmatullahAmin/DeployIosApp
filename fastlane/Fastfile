@@ -6,7 +6,8 @@ platform :ios do
     # Flexible parameter resolution: CLI option → ENV fallback
     key_id = options[:appstore_key_id] || ENV["APPSTORE_KEY_ID"]
     issuer_id = options[:appstore_issuer_id] || ENV["APPSTORE_ISSUER_ID"]
-    key_filepath = options[:key_filepath] || ENV["KEY_FILEPATH"] || "./fastlane/Api_key.p8"
+#     key_filepath = options[:key_filepath] || ENV["KEY_FILEPATH"] || "./fastlane/Api_key.p8"
+    key_filepath = options[:key_filepath] || ENV["KEY_FILEPATH"]
     match_password = options[:match_password] || ENV["MATCH_PASSWORD"]
     match_git_basic_authorization = options[:match_git_basic_authorization] || ENV["MATCH_GIT_BASIC_AUTHORIZATION"]
 
